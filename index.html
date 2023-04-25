@@ -1,1094 +1,677 @@
-<html>
-
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Workflow</title>
-	<style>
-		/* cspell:disable-file */
-		/* webkit printing magic: print all background colors */
-		html {
-			-webkit-print-color-adjust: exact;
-		}
-
-		* {
-			box-sizing: border-box;
-			-webkit-print-color-adjust: exact;
-		}
-
-		html,
-		body {
-			margin: 0;
-			padding: 0;
-		}
-
-		html {
-			font-size: 19px !important;
-		}
-
-		body {
-			line-height: 1.5;
-			white-space: pre-wrap;
-		}
-
-		a,
-		a.visited {
-			color: inherit;
-			text-decoration: underline;
-		}
-
-		.pdf-relative-link-path {
-			font-size: 80%;
-			color: #444;
-		}
-
-		h1,
-		h2,
-		h3 {
-			letter-spacing: -0.01em;
-			line-height: 1.2;
-			font-weight: 600;
-			margin-bottom: 0;
-		}
-
-		.page-title {
-			font-size: 2.5rem;
-			font-weight: 700;
-			margin-top: 0;
-			margin-bottom: 0.75em;
-		}
-
-		h1 {
-			font-size: 1.875rem;
-			margin-top: 1.875rem;
-		}
-
-		h2 {
-			font-size: 1.5rem;
-			margin-top: 1.5rem;
-		}
-
-		h3 {
-			font-size: 1.25rem;
-			margin-top: 1.25rem;
-		}
-
-		.source {
-			border: 1px solid #ddd;
-			border-radius: 3px;
-			padding: 1.5em;
-			word-break: break-all;
-		}
-
-		.callout {
-			border-radius: 3px;
-			padding: 1rem;
-		}
-
-		figure {
-			margin: 1.25em 0;
-			page-break-inside: avoid;
-		}
-
-		figcaption {
-			opacity: 0.5;
-			font-size: 85%;
-			margin-top: 0.5em;
-		}
-
-		mark {
-			background-color: transparent;
-		}
-
-		.indented {
-			padding-left: 1.5em;
-		}
-
-		hr {
-			background: transparent;
-			display: block;
-			width: 100%;
-			height: 1px;
-			visibility: visible;
-			border: none;
-			border-bottom: 1px solid rgba(55, 53, 47, 0.09);
-		}
-
-		img {
-			max-width: 100%;
-		}
-
-		@media only print {
-			img {
-				max-height: 100vh;
-				object-fit: contain;
-			}
-		}
-
-		@page {
-			margin: 1in;
-		}
-
-		.collection-content {
-			font-size: 0.875rem;
-		}
-
-		.column-list {
-			display: flex;
-			justify-content: space-between;
-		}
-
-		.column {
-			padding: 0 1em;
-		}
-
-		.column:first-child {
-			padding-left: 0;
-		}
-
-		.column:last-child {
-			padding-right: 0;
-		}
-
-		.table_of_contents-item {
-			display: block;
-			font-size: 0.875rem;
-			line-height: 1.3;
-			padding: 0.125rem;
-		}
-
-		.table_of_contents-indent-1 {
-			margin-left: 1.5rem;
-		}
-
-		.table_of_contents-indent-2 {
-			margin-left: 3rem;
-		}
-
-		.table_of_contents-indent-3 {
-			margin-left: 4.5rem;
-		}
-
-		.table_of_contents-link {
-			text-decoration: none;
-			opacity: 0.7;
-			border-bottom: 1px solid rgba(55, 53, 47, 0.18);
-		}
-
-		table,
-		th,
-		td {
-			border: 1px solid rgba(55, 53, 47, 0.09);
-			border-collapse: collapse;
-		}
-
-		table {
-			border-left: none;
-			border-right: none;
-		}
-
-		th,
-		td {
-			font-weight: normal;
-			padding: 0.25em 0.5em;
-			line-height: 1.5;
-			min-height: 1.5em;
-			text-align: left;
-		}
-
-		th {
-			color: rgba(55, 53, 47, 0.6);
-		}
-
-		ol,
-		ul {
-			margin: 0;
-			margin-block-start: 0.6em;
-			margin-block-end: 0.6em;
-		}
-
-		li>ol:first-child,
-		li>ul:first-child {
-			margin-block-start: 0.6em;
-		}
-
-		ul>li {
-			list-style: disc;
-		}
-
-		ul.to-do-list {
-			padding-inline-start: 0;
-		}
-
-		ul.to-do-list>li {
-			list-style: none;
-		}
-
-		.to-do-children-checked {
-			text-decoration: line-through;
-			opacity: 0.375;
-		}
-
-		ul.toggle>li {
-			list-style: none;
-		}
-
-		ul {
-			padding-inline-start: 1.7em;
-		}
-
-		ul>li {
-			padding-left: 0.1em;
-		}
-
-		ol {
-			padding-inline-start: 1.6em;
-		}
-
-		ol>li {
-			padding-left: 0.2em;
-		}
-
-		.mono ol {
-			padding-inline-start: 2em;
-		}
-
-		.mono ol>li {
-			text-indent: -0.4em;
-		}
-
-		.toggle {
-			padding-inline-start: 0em;
-			list-style-type: none;
-		}
-
-		/* Indent toggle children */
-		.toggle>li>details {
-			padding-left: 1.7em;
-		}
-
-		.toggle>li>details>summary {
-			margin-left: -1.1em;
-		}
-
-		.selected-value {
-			display: inline-block;
-			padding: 0 0.5em;
-			background: rgba(206, 205, 202, 0.5);
-			border-radius: 3px;
-			margin-right: 0.5em;
-			margin-top: 0.3em;
-			margin-bottom: 0.3em;
-			white-space: nowrap;
-		}
-
-		.collection-title {
-			display: inline-block;
-			margin-right: 1em;
-		}
-
-		.simple-table {
-			margin-top: 1em;
-			font-size: 0.875rem;
-			empty-cells: show;
-		}
-
-		.simple-table td {
-			height: 29px;
-			min-width: 120px;
-		}
-
-		.simple-table th {
-			height: 29px;
-			min-width: 120px;
-		}
-
-		.simple-table-header-color {
-			background: rgb(247, 246, 243);
-			color: black;
-		}
-
-		.simple-table-header {
-			font-weight: 500;
-		}
-
-		time {
-			opacity: 0.5;
-		}
-
-		.icon {
-			display: inline-block;
-			max-width: 1.2em;
-			max-height: 1.2em;
-			text-decoration: none;
-			vertical-align: text-bottom;
-			margin-right: 0.5em;
-		}
-
-		img.icon {
-			border-radius: 3px;
-		}
-
-		.user-icon {
-			width: 1.5em;
-			height: 1.5em;
-			border-radius: 100%;
-			margin-right: 0.5rem;
-		}
-
-		.user-icon-inner {
-			font-size: 0.8em;
-		}
-
-		.text-icon {
-			border: 1px solid #000;
-			text-align: center;
-		}
-
-		.page-cover-image {
-			display: block;
-			object-fit: cover;
-			width: 100%;
-			max-height: 30vh;
-		}
-
-		.page-header-icon {
-			font-size: 3rem;
-			margin-bottom: 1rem;
-		}
-
-		.page-header-icon-with-cover {
-			margin-top: -0.72em;
-			margin-left: 0.07em;
-		}
-
-		.page-header-icon img {
-			border-radius: 3px;
-		}
-
-		.link-to-page {
-			margin: 1em 0;
-			padding: 0;
-			border: none;
-			font-weight: 500;
-		}
-
-		p>.user {
-			opacity: 0.5;
-		}
-
-		td>.user,
-		td>time {
-			white-space: nowrap;
-		}
-
-		input[type="checkbox"] {
-			transform: scale(1.5);
-			margin-right: 0.6em;
-			vertical-align: middle;
-		}
-
-		p {
-			margin-top: 0.5em;
-			margin-bottom: 0.5em;
-		}
-
-		.image {
-			border: none;
-			margin: 1.5em 0;
-			padding: 0;
-			border-radius: 0;
-			text-align: center;
-		}
-
-		.code,
-		code {
-			background: rgba(135, 131, 120, 0.15);
-			border-radius: 3px;
-			padding: 0.2em 0.4em;
-			border-radius: 3px;
-			font-size: 85%;
-			tab-size: 2;
-		}
-
-		code {
-			color: #eb5757;
-		}
-
-		.code {
-			padding: 1.5em 1em;
-		}
-
-		.code-wrap {
-			white-space: pre-wrap;
-			word-break: break-all;
-		}
-
-		.code>code {
-			background: none;
-			padding: 0;
-			font-size: 100%;
-			color: inherit;
-		}
-
-		blockquote {
-			font-size: 1.25em;
-			margin: 1em 0;
-			padding-left: 1em;
-			border-left: 3px solid rgb(55, 53, 47);
-		}
-
-		.bookmark {
-			text-decoration: none;
-			max-height: 8em;
-			padding: 0;
-			display: flex;
-			width: 100%;
-			align-items: stretch;
-		}
-
-		.bookmark-title {
-			font-size: 0.85em;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			height: 1.75em;
-			white-space: nowrap;
-		}
-
-		.bookmark-text {
-			display: flex;
-			flex-direction: column;
-		}
-
-		.bookmark-info {
-			flex: 4 1 180px;
-			padding: 12px 14px 14px;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-		}
-
-		.bookmark-image {
-			width: 33%;
-			flex: 1 1 180px;
-			display: block;
-			position: relative;
-			object-fit: cover;
-			border-radius: 1px;
-		}
-
-		.bookmark-description {
-			color: rgba(55, 53, 47, 0.6);
-			font-size: 0.75em;
-			overflow: hidden;
-			max-height: 4.5em;
-			word-break: break-word;
-		}
-
-		.bookmark-href {
-			font-size: 0.75em;
-			margin-top: 0.25em;
-		}
-
-		.sans {
-			font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-		}
-
-		.code {
-			font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace;
-		}
-
-		.serif {
-			font-family: Lyon-Text, Georgia, ui-serif, serif;
-		}
-
-		.mono {
-			font-family: iawriter-mono, Nitti, Menlo, Courier, monospace;
-		}
-
-		.pdf .sans {
-			font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP';
-		}
-
-		.pdf:lang(zh-CN) .sans {
-			font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC';
-		}
-
-		.pdf:lang(zh-TW) .sans {
-			font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC';
-		}
-
-		.pdf:lang(ko-KR) .sans {
-			font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR';
-		}
-
-		.pdf .code {
-			font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP';
-		}
-
-		.pdf:lang(zh-CN) .code {
-			font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC';
-		}
-
-		.pdf:lang(zh-TW) .code {
-			font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC';
-		}
-
-		.pdf:lang(ko-KR) .code {
-			font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR';
-		}
-
-		.pdf .serif {
-			font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP';
-		}
-
-		.pdf:lang(zh-CN) .serif {
-			font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC';
-		}
-
-		.pdf:lang(zh-TW) .serif {
-			font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC';
-		}
-
-		.pdf:lang(ko-KR) .serif {
-			font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR';
-		}
-
-		.pdf .mono {
-			font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP';
-		}
-
-		.pdf:lang(zh-CN) .mono {
-			font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC';
-		}
-
-		.pdf:lang(zh-TW) .mono {
-			font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC';
-		}
-
-		.pdf:lang(ko-KR) .mono {
-			font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR';
-		}
-
-		.highlight-default {
-			color: rgba(55, 53, 47, 1);
-		}
-
-		.highlight-gray {
-			color: rgba(120, 119, 116, 1);
-			fill: rgba(120, 119, 116, 1);
-		}
-
-		.highlight-brown {
-			color: rgba(159, 107, 83, 1);
-			fill: rgba(159, 107, 83, 1);
-		}
-
-		.highlight-orange {
-			color: rgba(217, 115, 13, 1);
-			fill: rgba(217, 115, 13, 1);
-		}
-
-		.highlight-yellow {
-			color: rgba(203, 145, 47, 1);
-			fill: rgba(203, 145, 47, 1);
-		}
-
-		.highlight-teal {
-			color: rgba(68, 131, 97, 1);
-			fill: rgba(68, 131, 97, 1);
-		}
-
-		.highlight-blue {
-			color: rgba(51, 126, 169, 1);
-			fill: rgba(51, 126, 169, 1);
-		}
-
-		.highlight-purple {
-			color: rgba(144, 101, 176, 1);
-			fill: rgba(144, 101, 176, 1);
-		}
-
-		.highlight-pink {
-			color: rgba(193, 76, 138, 1);
-			fill: rgba(193, 76, 138, 1);
-		}
-
-		.highlight-red {
-			color: rgba(212, 76, 71, 1);
-			fill: rgba(212, 76, 71, 1);
-		}
-
-		.highlight-gray_background {
-			background: rgba(241, 241, 239, 1);
-		}
-
-		.highlight-brown_background {
-			background: rgba(244, 238, 238, 1);
-		}
-
-		.highlight-orange_background {
-			background: rgba(251, 236, 221, 1);
-		}
-
-		.highlight-yellow_background {
-			background: rgba(251, 243, 219, 1);
-		}
-
-		.highlight-teal_background {
-			background: rgba(237, 243, 236, 1);
-		}
-
-		.highlight-blue_background {
-			background: rgba(231, 243, 248, 1);
-		}
-
-		.highlight-purple_background {
-			background: rgba(244, 240, 247, 0.8);
-		}
-
-		.highlight-pink_background {
-			background: rgba(249, 238, 243, 0.8);
-		}
-
-		.highlight-red_background {
-			background: rgba(253, 235, 236, 1);
-		}
-
-		.block-color-default {
-			color: inherit;
-			fill: inherit;
-		}
-
-		.block-color-gray {
-			color: rgba(120, 119, 116, 1);
-			fill: rgba(120, 119, 116, 1);
-		}
-
-		.block-color-brown {
-			color: rgba(159, 107, 83, 1);
-			fill: rgba(159, 107, 83, 1);
-		}
-
-		.block-color-orange {
-			color: rgba(217, 115, 13, 1);
-			fill: rgba(217, 115, 13, 1);
-		}
-
-		.block-color-yellow {
-			color: rgba(203, 145, 47, 1);
-			fill: rgba(203, 145, 47, 1);
-		}
-
-		.block-color-teal {
-			color: rgba(68, 131, 97, 1);
-			fill: rgba(68, 131, 97, 1);
-		}
-
-		.block-color-blue {
-			color: rgba(51, 126, 169, 1);
-			fill: rgba(51, 126, 169, 1);
-		}
-
-		.block-color-purple {
-			color: rgba(144, 101, 176, 1);
-			fill: rgba(144, 101, 176, 1);
-		}
-
-		.block-color-pink {
-			color: rgba(193, 76, 138, 1);
-			fill: rgba(193, 76, 138, 1);
-		}
-
-		.block-color-red {
-			color: rgba(212, 76, 71, 1);
-			fill: rgba(212, 76, 71, 1);
-		}
-
-		.block-color-gray_background {
-			background: rgba(241, 241, 239, 1);
-		}
-
-		.block-color-brown_background {
-			background: rgba(244, 238, 238, 1);
-		}
-
-		.block-color-orange_background {
-			background: rgba(251, 236, 221, 1);
-		}
-
-		.block-color-yellow_background {
-			background: rgba(251, 243, 219, 1);
-		}
-
-		.block-color-teal_background {
-			background: rgba(237, 243, 236, 1);
-		}
-
-		.block-color-blue_background {
-			background: rgba(231, 243, 248, 1);
-		}
-
-		.block-color-purple_background {
-			background: rgba(244, 240, 247, 0.8);
-		}
-
-		.block-color-pink_background {
-			background: rgba(249, 238, 243, 0.8);
-		}
-
-		.block-color-red_background {
-			background: rgba(253, 235, 236, 1);
-		}
-
-		.select-value-color-pink {
-			background-color: rgba(245, 224, 233, 1);
-		}
-
-		.select-value-color-purple {
-			background-color: rgba(232, 222, 238, 1);
-		}
-
-		.select-value-color-green {
-			background-color: rgba(219, 237, 219, 1);
-		}
-
-		.select-value-color-gray {
-			background-color: rgba(227, 226, 224, 1);
-		}
-
-		.select-value-color-translucentGray {
-			background-color: rgba(255, 255, 255, 0.0375);
-		}
-
-		.select-value-color-orange {
-			background-color: rgba(250, 222, 201, 1);
-		}
-
-		.select-value-color-brown {
-			background-color: rgba(238, 224, 218, 1);
-		}
-
-		.select-value-color-red {
-			background-color: rgba(255, 226, 221, 1);
-		}
-
-		.select-value-color-yellow {
-			background-color: rgba(253, 236, 200, 1);
-		}
-
-		.select-value-color-blue {
-			background-color: rgba(211, 229, 239, 1);
-		}
-
-		.checkbox {
-			display: inline-flex;
-			vertical-align: text-bottom;
-			width: 16;
-			height: 16;
-			background-size: 16px;
-			margin-left: 2px;
-			margin-right: 5px;
-		}
-
-		.checkbox-on {
-			background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
-		}
-
-		.checkbox-off {
-			background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
-		}
-	</style>
-</head>
-
-<body>
-	<article id="c8931398-22e3-483e-95e2-e71cc949e91e" class="page sans">
-		<header><img class="page-cover-image"
-				src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?ixlib=rb-4.0.3&amp;q=85&amp;fm=jpg&amp;crop=entropy&amp;cs=srgb"
-				style="object-position:center 45.4%" />
-			<h1 class="page-title">Workflow</h1>
-		</header>
-		<div class="page-body">
-			<figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex"
-				id="d59a16c6-824b-4690-82ab-dfdc661c0b53">
-				<div style="font-size:1.5em"><span class="icon">💡</span></div>
-				<div style="width:100%">Workflow này được tạo ra nhằm đảm bảo các members của Xôm làm việc trơn tru và
-					hiệu quả nhất có thể, hạn chế các lỗi lầm không đáng có thể xảy ra. Chính vì thế mà anh mong muốn
-					tất cả mọi người tuân thủ nghiêm ngặt nó. Nếu có vấn đề gì chưa hợp lý, mọi người hãy cứ thoải mái
-					liên hệ lại với anh (<a
-						href="https://www.facebook.com/jinnie.tuan.0303/">https://www.facebook.com/jinnie.tuan.0303/</a>).
-					Cám ơn mọi người nhé 🥰</div>
-			</figure>
-			<h1 id="91146f62-9662-49ce-8731-2dc6bed9c4ba" class="">Theo trình tự order &gt; pha chế &gt; phục vụ</h1>
-			<ul id="0946b195-b5b4-448a-8906-297480ab1cb3" class="bulleted-list">
-				<li style="list-style-type:disc"><strong>Đối với khách order tại quầy</strong>
-					<ol type="1" id="20aab04a-bfc8-472b-a44c-3f5335eb9010" class="numbered-list" start="1">
-						<li>Mở nhỏ loa để dễ nói chuyện với khách</li>
-					</ol>
-					<ol type="1" id="068fb4d1-e985-463e-8742-1244275eea61" class="numbered-list" start="2">
-						<li>“Xôm xin chào ạ, mời anh/chị dùng nước ạ”</li>
-					</ol>
-					<ol type="1" id="ec6adeaf-f53c-4ad9-8999-53e6998232e4" class="numbered-list" start="3">
-						<li>Đối với khách lưỡng lự chưa chọn được món thì mình sẽ xin phép tư vấn khách<ol type="a"
-								id="3dd8a256-00ca-4346-8b28-15eea20f9c8a" class="numbered-list" start="1">
-								<li>“Em xin phép tư vấn cho anh/chị được không ạ?”</li>
-							</ol>
-							<ol type="a" id="9ded7f7e-22ec-426f-94bb-fe24573da989" class="numbered-list" start="2">
-								<li>Sau khi khách đồng ý ⇒ Mình sẽ tư vấn những món best seller như trà đào cam sả, sữa
-									chua,… (nói chung là mấy món giá cao + pha dễ)<ol type="i"
-										id="bce5088d-d67a-436a-b97a-eeccf8868b38" class="numbered-list" start="1">
-										<li>Mình sẽ dựa trên khách như thế nào để tư vấn phù hợp</li>
-									</ol>
-									<ol type="i" id="ef1c716d-a594-490b-a72d-0ecaeee5d97e" class="numbered-list"
-										start="2">
-										<li>Ví dụ khách là nam ⇒ cafe, trà. Khách là nữ ⇒ sữa chua, sinh tố, nước ép
-										</li>
-									</ol>
-									<ol type="i" id="04b092ba-f4ce-4fb7-8722-b62ef2dfd8c0" class="numbered-list"
-										start="3">
-										<li>Buổi sáng thì tư vấn cafe kem trứng, trưa hoặc tối ⇒ thiên về các món còn
-											lại</li>
-									</ol>
-									<ol type="i" id="db554f7d-eec3-40b4-a449-fe6643c4de1e" class="numbered-list"
-										start="4">
-										<li>Nhớ hỏi thêm “Anh/chị có muốn dùng thêm hướng dương không ạ?”</li>
-									</ol>
-								</li>
-							</ol>
-						</li>
-					</ol>
-					<ol type="1" id="32af3fb5-e188-413a-96e4-d07fd7b54171" class="numbered-list" start="4">
-						<li>Sau khi khách gọi được món ⇒ tạo đơn trên máy pos</li>
-					</ol>
-					<ol type="1" id="fb40c35f-b0cc-4665-b3ca-3ddbd9aeb4d4" class="numbered-list" start="5">
-						<li>Confirm với khách “Dạ của anh/chị gồm có …, … ạ, tổng của anh/chị là …k ạ” </li>
-					</ol>
-					<ol type="1" id="4970beb6-7632-4321-92a9-ab23cbf6ba6b" class="numbered-list" start="6">
-						<li>Đối với khách chuyển khoản ⇒ xin phép khách chụp lại giao dịch ⇒ gửi lên group thanh toán
-						</li>
-					</ol>
-					<ol type="1" id="123719b1-0173-4578-aaf6-fc9e609908b6" class="numbered-list" start="7">
-						<li>Đối với khách đưa tiền mặt ⇒ nhập số tiền khách đưa lên pos ⇒ lấy ra số tiền thừa máy pos
-							tính</li>
-					</ol>
-					<ol type="1" id="5e2d1e73-1131-4730-a10c-7e684dd1d198" class="numbered-list" start="8">
-						<li>Xác nhận + in hoá đơn ⇒ “Xôm cám ơn ạ. Em gửi anh/chị hoá đơn và tiền thừa ạ, mời anh/chị ra
-							bàn ngồi chờ một xíu ạ”</li>
-					</ol>
-				</li>
-			</ul>
-			<ul id="f425cfc1-88c4-4896-8c2b-6a85a8527855" class="bulleted-list">
-				<li style="list-style-type:disc"><strong>Đối với khách order tại bàn</strong>
-					<ol type="1" id="923829a8-4dda-4cc5-a2e0-4143f52d94c3" class="numbered-list" start="1">
-						<li>Phục vụ cầm theo menu ra bàn</li>
-					</ol>
-					<ol type="1" id="fdd4d98f-3bd0-41d3-9aeb-4ef6e6ebb55a" class="numbered-list" start="2">
-						<li> “Xôm xin chào ạ, mời anh/chị dùng nước ạ”</li>
-					</ol>
-					<ol type="1" id="dc45eb06-25a8-4a62-86c8-3be9179c3b3f" class="numbered-list" start="3">
-						<li>Đối với khách lưỡng lự chưa chọn được món thì mình sẽ xin phép tư vấn khách<ol type="a"
-								id="60d37b7a-7d47-44b0-9699-0e5132585795" class="numbered-list" start="1">
-								<li>“Em xin phép tư vấn cho anh/chị được không ạ?”</li>
-							</ol>
-							<ol type="a" id="0e81cc5a-7e05-4d63-8fde-07c4bfeeb0a0" class="numbered-list" start="2">
-								<li>Sau khi khách đồng ý ⇒ Mình sẽ tư vấn những món best seller như trà đào cam sả, sữa
-									chua,… (nói chung là mấy món giá cao + pha dễ)<ol type="i"
-										id="b0bc2e22-39df-4e5c-8a41-8b7631e9405d" class="numbered-list" start="1">
-										<li>Mình sẽ dựa trên khách như thế nào để tư vấn phù hợp</li>
-									</ol>
-									<ol type="i" id="42efbdf7-e195-44f9-878d-24cd3fe5068a" class="numbered-list"
-										start="2">
-										<li>Ví dụ khách là nam ⇒ cafe, trà. Khách là nữ ⇒ sữa chua, sinh tố, nước ép
-										</li>
-									</ol>
-									<ol type="i" id="6007a3a2-c697-462a-9ac7-27737eece9c1" class="numbered-list"
-										start="3">
-										<li>Buổi sáng thì tư vấn cafe kem trứng, trưa hoặc tối ⇒ thiên về các món còn
-											lại</li>
-									</ol>
-									<ol type="i" id="ef02f432-e2b0-4ea2-a30f-1bee65d12a50" class="numbered-list"
-										start="4">
-										<li>Nhớ hỏi thêm “Anh/chị có muốn dùng thêm hướng dương không ạ?”</li>
-									</ol>
-								</li>
-							</ol>
-						</li>
-					</ol>
-					<ol type="1" id="5829092f-4292-41c1-b4ed-41e9b99cdc98" class="numbered-list" start="4">
-						<li>Sau khi khách gọi được món ⇒ Note vào giấy note ⇒ Confirm với khách “Dạ của anh/chị gồm có
-							…, … ạ” </li>
-					</ol>
-					<ol type="1" id="23943a50-283a-496c-9826-3e868a1832e8" class="numbered-list" start="5">
-						<li>Khách ok ⇒ vào bar đưa giấy note ⇒ yêu cầu pha chế lên đơn trên máy pos ⇒ in hoá đơn</li>
-					</ol>
-					<ol type="1" id="f9a29edd-4e50-4b97-8d50-14248e112fad" class="numbered-list" start="6">
-						<li>Sau khi có hoá đơn ⇒ cầm hoá đơn + nước chờ + mã QR ra “Em gửi anh/chị nước chờ trong lúc
-							đợi món ạ” và yêu cầu khách thanh toán luôn</li>
-					</ol>
-					<ol type="1" id="c7ea7388-7ded-47fc-8bca-0cb391626fc8" class="numbered-list" start="7">
-						<li>Đối với khách chuyển khoản ⇒ xin phép khách chụp lại giao dịch ⇒ “Xôm cám ơn ạ” ⇒ gửi lên
-							group thanh toán</li>
-					</ol>
-					<ol type="1" id="4065285b-75ec-42f8-b926-5dc6604019be" class="numbered-list" start="8">
-						<li>Đối với khách đưa tiền mặt ⇒ nhận lấy bằng 2 tay ⇒ “Em nhận của anh/chị …k ạ, anh/chị đợi em
-							chút ạ”</li>
-					</ol>
-					<ol type="1" id="f04ce526-d4fb-4b05-8aad-217991fcc4d9" class="numbered-list" start="9">
-						<li>Vào bar lấy tiền thừa ⇒ “Em gửi anh/chị tiền thừa ạ, chúc anh/chị một ngày/buổi tối vui vẻ
-							ạ”</li>
-					</ol>
-					<p id="9137adbd-9b30-4d94-bba8-defecd95f636" class="">
-					</p>
-					<p id="99d6176d-9de9-446e-8a2e-83b4f4a73a38" class="">
-					</p>
-				</li>
-			</ul>
-			<h1 id="3a00ca69-ed3e-4720-a42f-a4396870334a" class="">Theo trình tự mở quán &gt; đổi ca &gt; đóng quán</h1>
-			<figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex"
-				id="d4fb43e8-0d84-46c7-8717-079a8ec587ce">
-				<div style="font-size:1.5em"><span class="icon">💡</span></div>
-				<div style="width:100%">Áp dụng đối với các bạn pha chế kiêm thu ngân</div>
-			</figure>
-			<ul id="e8c8b22d-b2ee-42fb-a6b8-6dab034756b1" class="bulleted-list">
-				<li style="list-style-type:disc"><strong>Ca sáng</strong>
-					<ol type="1" id="a1582922-5d29-4047-90a5-953deacc1868" class="numbered-list" start="1">
-						<li>Đăng nhập tài khoản đã được cấp của mình vào máy pos</li>
-					</ol>
-					<ol type="1" id="20ba29e1-9fbc-49ae-945b-502fece0fcd7" class="numbered-list" start="2">
-						<li>Đếm số tiền trong két ⇒ nhập vào máy pos</li>
-					</ol>
-					<ol type="1" id="5bd9aafe-7950-42cb-b8d8-4a50bf99e07f" class="numbered-list" start="3">
-						<li>Mở ca</li>
-					</ol>
-				</li>
-			</ul>
-			<ul id="d4fed96e-6cc3-4744-86e3-407c8e3496b2" class="bulleted-list">
-				<li style="list-style-type:disc"><strong>Ca chiều</strong>
-					<ol type="1" id="73b8a0ca-10a8-48ee-98ee-0509bd773a85" class="numbered-list" start="1">
-						<li>Yêu cầu ca sáng chốt ca</li>
-					</ol>
-					<ol type="1" id="2e3b2306-591d-4cdc-82f8-57352522047c" class="numbered-list" start="2">
-						<li>Đăng xuất tài khoản của ca sáng ⇒ đăng nhập tài khoản của ca chiều</li>
-					</ol>
-					<ol type="1" id="8697b2f8-91fd-463a-9a82-97a278970333" class="numbered-list" start="3">
-						<li>Đếm lại số tiền trong két ⇒ nhập vào máy pos</li>
-					</ol>
-					<ol type="1" id="719e14b0-6706-4e7d-a576-6ed48f0488b7" class="numbered-list" start="4">
-						<li>Mở ca</li>
-					</ol>
-				</li>
-			</ul>
-			<ul id="b56df56e-afd5-4b08-b5d4-a8aa62ef1a37" class="bulleted-list">
-				<li style="list-style-type:disc"><strong>Ca tối</strong>
-					<ol type="1" id="56498f9e-eadf-4f07-b6a3-6dfc6ed677c2" class="numbered-list" start="1">
-						<li>Yêu cầu ca chiều chốt ca</li>
-					</ol>
-					<ol type="1" id="5641b0c4-c100-4fd1-bdc1-493093eee488" class="numbered-list" start="2">
-						<li>Đăng xuất tài khoản của ca chiều ⇒ đăng nhập tài khoản của ca tối</li>
-					</ol>
-					<ol type="1" id="04429408-4881-47b5-aa4f-4f460ea51945" class="numbered-list" start="3">
-						<li>Đếm lại số tiền trong két ⇒ nhập vào máy pos</li>
-					</ol>
-					<ol type="1" id="7189a84d-d808-4d5c-b97e-9c323c6d8f02" class="numbered-list" start="4">
-						<li>Mở ca</li>
-					</ol>
-					<ol type="1" id="e62f7c8e-11be-44c9-8e4f-3222a223d6ad" class="numbered-list" start="5">
-						<li>Cuối ngày sẽ chốt ca lần cuối</li>
-					</ol>
-					<h2 id="4c88f429-1908-4584-816c-b1929438b338" class="">Cách chốt ca đối với pha chế kiêm thu ngân
-					</h2>
-					<ol type="1" id="1de6eeb0-ab33-4d7e-bda1-552fad14bc09" class="numbered-list" start="1">
-						<li>Đóng ca + in phiếu chốt ca</li>
-					</ol>
-					<ol type="1" id="b3d6c02e-4f59-481e-8d33-e1f263c18b4d" class="numbered-list" start="2">
-						<li>Lấy số dư đầu + doanh thu (gross) - tiền chuyển khoản - tiền chi = số tiền còn lại trong két
-						</li>
-					</ol>
-					<ol type="1" id="fd8bc127-5208-422e-adcf-d934b626799c" class="numbered-list" start="3">
-						<li>Nhắn lên group thanh toán với format như sau:<figure
-								class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex"
-								id="910a8fd7-9fab-41d6-a9f0-da46429fc3e4">
-								<div style="font-size:1.5em"><span class="icon">📌</span></div>
-								<div style="width:100%">Tên member + chốt ca … ngày … :<p
-										id="29b9e531-1373-498b-9d73-a0584c83ee00" class="">Tiền trong két ban đầu : …
-										Tiền chuyển khoản: …
-										Tiền chi: …
-										Tiền thu: …
-										Tổng tiền: …</p>
-								</div>
-							</figure>
-							<p id="d5efcf3f-a1cd-4c88-80fd-df3a6ac3e5c9" class="">
-							</p>
-						</li>
-					</ol>
-				</li>
-			</ul>
-			<h1 id="27d09eaf-11c3-4d7d-a449-5932b5217a7c" class="">Các vấn đề cần lưu ý</h1>
-			<ul id="dc8c5f04-90d2-46bb-a2b8-25c6c90363bd" class="bulleted-list">
-				<li style="list-style-type:disc"><strong>Đối với tất cả members</strong>
-					<ol type="1" id="ccaeb7e0-e9ba-41d1-8d55-3bb617ee74e4" class="numbered-list" start="1">
-						<li>Luôn luôn nhớ nói “Xôm xin chào” và “Xôm cám ơn” với khách</li>
-					</ol>
-					<ol type="1" id="b7bc5a85-0f8f-4257-956b-561967b43736" class="numbered-list" start="2">
-						<li>Đưa hay nhận bất kỳ gì từ khách đều dùng 2 tay</li>
-					</ol>
-					<ol type="1" id="9c121ba1-ff5d-4775-a2b3-8dc45a210d25" class="numbered-list" start="3">
-						<li>Mỗi CN hàng tuần vào đăng ký lịch làm cho tuần sau trên sheets </li>
-					</ol>
-				</li>
-			</ul>
-			<ul id="e217fa7c-66ad-46b4-a973-7e01c53aa03a" class="bulleted-list">
-				<li style="list-style-type:disc"><strong>Đối với các bạn pha chế kiêm thu ngân</strong>
-					<ol type="1" id="26caa28f-6316-4096-8e85-90303ec5099b" class="numbered-list" start="1">
-						<li>Luôn luôn phải tạo hoá đơn trước khi pha</li>
-					</ol>
-					<ol type="1" id="fb434b35-e76e-4d0e-a903-7c03fa1f6fdb" class="numbered-list" start="2">
-						<li>Tạo phiếu chi sau khi sử dụng tiền trong két</li>
-					</ol>
-					<ol type="1" id="0097da7b-2471-4d8f-a7c4-e442c875966d" class="numbered-list" start="3">
-						<li>Ca tối mỗi ngày 2, 4, 6, CN check toàn bộ nguyên liệu và ước lượng xem những gì sắp hết cần
-							đặt thêm ⇒ tổng hợp và nhắn cho anh Tuấn</li>
-					</ol>
-					<ol type="1" id="b88336ed-e6f9-4f4e-a9aa-0ee3f23437cd" class="numbered-list" start="4">
-						<li>Không được cho người không phải thành viên của quán vào bar hay sử dụng các đồ vật có trên
-							bar (nếu phát hiện sẽ bị phạt tiền)</li>
-					</ol>
-					<ol type="1" id="b0d91fd3-3aeb-4cb0-98fb-acc0632971b7" class="numbered-list" start="5">
-						<li>Luôn giữ gìn khu vực bar gọn gàng và sạch sẽ nhất có thể</li>
-					</ol>
-					<ol type="1" id="5972edd5-1120-46ce-bd2b-bd7ecc383636" class="numbered-list" start="6">
-						<li>Khi thấy lượng đá trong thùng còn ít ⇒ gọi ship đá luôn</li>
-					</ol>
-					<ol type="1" id="7ab26082-fe2b-461f-a608-df745021ff3b" class="numbered-list" start="7">
-						<li>Cuối mỗi ca cần phải dọn bar + đổ rác nếu đầy (riêng ca tối vẫn đổ dù ít hay nhiều)</li>
-					</ol>
-				</li>
-			</ul>
-			<ul id="376f71ee-75a0-4279-8e79-e185134dc9de" class="bulleted-list">
-				<li style="list-style-type:disc"><strong>Đối với các bạn phục vụ</strong>
-					<ol type="1" id="13e8ad7f-a678-4dd9-a8a5-014862fb1345" class="numbered-list" start="1">
-						<li>Luôn luôn đi giày và ăn mặc gọn gàng</li>
-					</ol>
-					<ol type="1" id="12536a0d-faab-45e9-b54c-cfa83f2d413c" class="numbered-list" start="2">
-						<li>Cần nắm được khi nào khách đến và khách đi</li>
-					</ol>
-					<ol type="1" id="6741a46a-d64f-42e8-9bc0-8e266b9b2e6a" class="numbered-list" start="3">
-						<li>Khi đợi nước ở bar cần quay mặt ra phía ngoài để nhìn thấy được khách</li>
-					</ol>
-					<ol type="1" id="0cd76768-6cd6-4ea8-bc81-f022ac4c9acc" class="numbered-list" start="4">
-						<li>Sau khi khách rời đi cần dọn bàn và phía bên dưới bàn luôn</li>
-					</ol>
-					<ol type="1" id="9d71ac50-ee40-43e0-947c-1b77bd0de199" class="numbered-list" start="5">
-						<li>(Với các bạn là nam) Ra dắt xe giúp khách và để gọn gàng</li>
-					</ol>
-					<ol type="1" id="c8d0d1d3-2f51-454b-bb87-64d09fc49c08" class="numbered-list" start="6">
-						<li>Cuối ngày cất ghế, bàn sắt, bảng biển + dọn dẹp quán + phụ giúp các bạn bar </li>
-					</ol>
-					<p id="3827c38a-a762-4561-8b14-9fe6862519a4" class="">
-					</p>
-				</li>
-			</ul>
-		</div>
-	</article>
-</body>
-
-</html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Workflow</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="c8931398-22e3-483e-95e2-e71cc949e91e" class="page sans"><header><img class="page-cover-image" src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?ixlib=rb-4.0.3&amp;q=85&amp;fm=jpg&amp;crop=entropy&amp;cs=srgb" style="object-position:center 45.4%"/><h1 class="page-title">Workflow</h1></header><div class="page-body"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="d59a16c6-824b-4690-82ab-dfdc661c0b53"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">Workflow này được tạo ra nhằm đảm bảo các members của Xôm làm việc trơn tru và hiệu quả nhất có thể, hạn chế các lỗi lầm không đáng có thể xảy ra. Chính vì thế mà anh mong muốn tất cả mọi người tuân thủ nghiêm ngặt nó. Nếu có vấn đề gì chưa hợp lý, mọi người hãy cứ thoải mái liên hệ lại với anh (<a href="https://www.facebook.com/jinnie.tuan.0303/">https://www.facebook.com/jinnie.tuan.0303/</a>). Cám ơn mọi người nhé 🥰</div></figure><h1 id="91146f62-9662-49ce-8731-2dc6bed9c4ba" class="">Theo trình tự order &gt; pha chế &gt; phục vụ</h1><ul id="0946b195-b5b4-448a-8906-297480ab1cb3" class="bulleted-list"><li style="list-style-type:disc"><strong>Đối với khách order tại quầy</strong><ol type="1" id="20aab04a-bfc8-472b-a44c-3f5335eb9010" class="numbered-list" start="1"><li>Mở nhỏ loa để dễ nói chuyện với khách</li></ol><ol type="1" id="068fb4d1-e985-463e-8742-1244275eea61" class="numbered-list" start="2"><li>“Xôm xin chào ạ, mời anh/chị dùng nước ạ”</li></ol><ol type="1" id="ec6adeaf-f53c-4ad9-8999-53e6998232e4" class="numbered-list" start="3"><li>Đối với khách lưỡng lự chưa chọn được món thì mình sẽ xin phép tư vấn khách<ol type="a" id="3dd8a256-00ca-4346-8b28-15eea20f9c8a" class="numbered-list" start="1"><li>“Em xin phép tư vấn cho anh/chị được không ạ?”</li></ol><ol type="a" id="9ded7f7e-22ec-426f-94bb-fe24573da989" class="numbered-list" start="2"><li>Sau khi khách đồng ý ⇒ Mình sẽ tư vấn những món best seller như trà đào cam sả, sữa chua,… (nói chung là mấy món giá cao + pha dễ)<ol type="i" id="bce5088d-d67a-436a-b97a-eeccf8868b38" class="numbered-list" start="1"><li>Mình sẽ dựa trên khách như thế nào để tư vấn phù hợp</li></ol><ol type="i" id="ef1c716d-a594-490b-a72d-0ecaeee5d97e" class="numbered-list" start="2"><li>Ví dụ khách là nam ⇒ cafe, trà. Khách là nữ ⇒ sữa chua, sinh tố, nước ép</li></ol><ol type="i" id="04b092ba-f4ce-4fb7-8722-b62ef2dfd8c0" class="numbered-list" start="3"><li>Buổi sáng thì tư vấn cafe kem trứng, trưa hoặc tối ⇒ thiên về các món còn lại</li></ol><ol type="i" id="db554f7d-eec3-40b4-a449-fe6643c4de1e" class="numbered-list" start="4"><li>Nhớ hỏi thêm “Anh/chị có muốn dùng thêm hướng dương không ạ?”</li></ol></li></ol></li></ol><ol type="1" id="32af3fb5-e188-413a-96e4-d07fd7b54171" class="numbered-list" start="4"><li>Sau khi khách gọi được món ⇒ tạo đơn trên máy pos</li></ol><ol type="1" id="fb40c35f-b0cc-4665-b3ca-3ddbd9aeb4d4" class="numbered-list" start="5"><li>Confirm với khách “Dạ của anh/chị gồm có …, … ạ, tổng của anh/chị là …k ạ” </li></ol><ol type="1" id="4970beb6-7632-4321-92a9-ab23cbf6ba6b" class="numbered-list" start="6"><li>Đối với khách chuyển khoản ⇒ xin phép khách chụp lại giao dịch ⇒ gửi lên group thanh toán</li></ol><ol type="1" id="123719b1-0173-4578-aaf6-fc9e609908b6" class="numbered-list" start="7"><li>Đối với khách đưa tiền mặt ⇒ nhập số tiền khách đưa lên pos ⇒ lấy ra số tiền thừa máy pos tính</li></ol><ol type="1" id="5e2d1e73-1131-4730-a10c-7e684dd1d198" class="numbered-list" start="8"><li>Xác nhận + in hoá đơn ⇒ “Xôm cám ơn ạ. Em gửi anh/chị hoá đơn và tiền thừa ạ, mời anh/chị ra bàn ngồi chờ một xíu ạ”</li></ol></li></ul><ul id="f425cfc1-88c4-4896-8c2b-6a85a8527855" class="bulleted-list"><li style="list-style-type:disc"><strong>Đối với khách order tại bàn</strong><ol type="1" id="923829a8-4dda-4cc5-a2e0-4143f52d94c3" class="numbered-list" start="1"><li>Phục vụ cầm theo menu ra bàn</li></ol><ol type="1" id="fdd4d98f-3bd0-41d3-9aeb-4ef6e6ebb55a" class="numbered-list" start="2"><li> “Xôm xin chào ạ, mời anh/chị dùng nước ạ”</li></ol><ol type="1" id="dc45eb06-25a8-4a62-86c8-3be9179c3b3f" class="numbered-list" start="3"><li>Đối với khách lưỡng lự chưa chọn được món thì mình sẽ xin phép tư vấn khách<ol type="a" id="60d37b7a-7d47-44b0-9699-0e5132585795" class="numbered-list" start="1"><li>“Em xin phép tư vấn cho anh/chị được không ạ?”</li></ol><ol type="a" id="0e81cc5a-7e05-4d63-8fde-07c4bfeeb0a0" class="numbered-list" start="2"><li>Sau khi khách đồng ý ⇒ Mình sẽ tư vấn những món best seller như trà đào cam sả, sữa chua,… (nói chung là mấy món giá cao + pha dễ)<ol type="i" id="b0bc2e22-39df-4e5c-8a41-8b7631e9405d" class="numbered-list" start="1"><li>Mình sẽ dựa trên khách như thế nào để tư vấn phù hợp</li></ol><ol type="i" id="42efbdf7-e195-44f9-878d-24cd3fe5068a" class="numbered-list" start="2"><li>Ví dụ khách là nam ⇒ cafe, trà. Khách là nữ ⇒ sữa chua, sinh tố, nước ép</li></ol><ol type="i" id="6007a3a2-c697-462a-9ac7-27737eece9c1" class="numbered-list" start="3"><li>Buổi sáng thì tư vấn cafe kem trứng, trưa hoặc tối ⇒ thiên về các món còn lại</li></ol><ol type="i" id="ef02f432-e2b0-4ea2-a30f-1bee65d12a50" class="numbered-list" start="4"><li>Nhớ hỏi thêm “Anh/chị có muốn dùng thêm hướng dương không ạ?”</li></ol></li></ol></li></ol><ol type="1" id="5829092f-4292-41c1-b4ed-41e9b99cdc98" class="numbered-list" start="4"><li>Sau khi khách gọi được món ⇒ Note vào giấy note ⇒ Confirm với khách “Dạ của anh/chị gồm có …, … ạ” </li></ol><ol type="1" id="23943a50-283a-496c-9826-3e868a1832e8" class="numbered-list" start="5"><li>Khách ok ⇒ vào bar đưa giấy note ⇒ yêu cầu pha chế lên đơn trên máy pos ⇒ in hoá đơn</li></ol><ol type="1" id="f9a29edd-4e50-4b97-8d50-14248e112fad" class="numbered-list" start="6"><li>Sau khi có hoá đơn ⇒ cầm hoá đơn + nước chờ + mã QR ra “Em gửi anh/chị nước chờ trong lúc đợi món ạ” và yêu cầu khách thanh toán luôn</li></ol><ol type="1" id="c7ea7388-7ded-47fc-8bca-0cb391626fc8" class="numbered-list" start="7"><li>Đối với khách chuyển khoản ⇒ xin phép khách chụp lại giao dịch ⇒ “Xôm cám ơn ạ” ⇒ gửi lên group thanh toán</li></ol><ol type="1" id="4065285b-75ec-42f8-b926-5dc6604019be" class="numbered-list" start="8"><li>Đối với khách đưa tiền mặt ⇒ nhận lấy bằng 2 tay ⇒ “Em nhận của anh/chị …k ạ, anh/chị đợi em chút ạ”</li></ol><ol type="1" id="f04ce526-d4fb-4b05-8aad-217991fcc4d9" class="numbered-list" start="9"><li>Vào bar lấy tiền thừa ⇒ “Em gửi anh/chị tiền thừa ạ, chúc anh/chị một ngày/buổi tối vui vẻ ạ”</li></ol><p id="9137adbd-9b30-4d94-bba8-defecd95f636" class="">
+</p><p id="99d6176d-9de9-446e-8a2e-83b4f4a73a38" class="">
+</p></li></ul><h1 id="3a00ca69-ed3e-4720-a42f-a4396870334a" class="">Theo trình tự mở quán &gt; đổi ca &gt; đóng quán</h1><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="d4fb43e8-0d84-46c7-8717-079a8ec587ce"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">Áp dụng đối với các bạn pha chế kiêm thu ngân</div></figure><ul id="e8c8b22d-b2ee-42fb-a6b8-6dab034756b1" class="bulleted-list"><li style="list-style-type:disc"><strong>Ca sáng</strong><ol type="1" id="a1582922-5d29-4047-90a5-953deacc1868" class="numbered-list" start="1"><li>Đăng nhập tài khoản đã được cấp của mình vào máy pos</li></ol><ol type="1" id="20ba29e1-9fbc-49ae-945b-502fece0fcd7" class="numbered-list" start="2"><li>Đếm số tiền trong két ⇒ nhập vào máy pos</li></ol><ol type="1" id="5bd9aafe-7950-42cb-b8d8-4a50bf99e07f" class="numbered-list" start="3"><li>Mở ca</li></ol></li></ul><ul id="d4fed96e-6cc3-4744-86e3-407c8e3496b2" class="bulleted-list"><li style="list-style-type:disc"><strong>Ca chiều</strong><ol type="1" id="73b8a0ca-10a8-48ee-98ee-0509bd773a85" class="numbered-list" start="1"><li>Yêu cầu ca sáng chốt ca</li></ol><ol type="1" id="2e3b2306-591d-4cdc-82f8-57352522047c" class="numbered-list" start="2"><li>Đăng xuất tài khoản của ca sáng ⇒ đăng nhập tài khoản của ca chiều</li></ol><ol type="1" id="8697b2f8-91fd-463a-9a82-97a278970333" class="numbered-list" start="3"><li>Đếm lại số tiền trong két ⇒ nhập vào máy pos</li></ol><ol type="1" id="719e14b0-6706-4e7d-a576-6ed48f0488b7" class="numbered-list" start="4"><li>Mở ca</li></ol></li></ul><ul id="b56df56e-afd5-4b08-b5d4-a8aa62ef1a37" class="bulleted-list"><li style="list-style-type:disc"><strong>Ca tối</strong><ol type="1" id="56498f9e-eadf-4f07-b6a3-6dfc6ed677c2" class="numbered-list" start="1"><li>Yêu cầu ca chiều chốt ca</li></ol><ol type="1" id="5641b0c4-c100-4fd1-bdc1-493093eee488" class="numbered-list" start="2"><li>Đăng xuất tài khoản của ca chiều ⇒ đăng nhập tài khoản của ca tối</li></ol><ol type="1" id="04429408-4881-47b5-aa4f-4f460ea51945" class="numbered-list" start="3"><li>Đếm lại số tiền trong két ⇒ nhập vào máy pos</li></ol><ol type="1" id="7189a84d-d808-4d5c-b97e-9c323c6d8f02" class="numbered-list" start="4"><li>Mở ca</li></ol><ol type="1" id="e62f7c8e-11be-44c9-8e4f-3222a223d6ad" class="numbered-list" start="5"><li>Cuối ngày sẽ chốt ca lần cuối</li></ol><h2 id="4c88f429-1908-4584-816c-b1929438b338" class="">Cách chốt ca đối với pha chế kiêm thu ngân</h2><ol type="1" id="1de6eeb0-ab33-4d7e-bda1-552fad14bc09" class="numbered-list" start="1"><li>Đóng ca + in phiếu chốt ca</li></ol><ol type="1" id="b3d6c02e-4f59-481e-8d33-e1f263c18b4d" class="numbered-list" start="2"><li>Lấy số dư đầu + doanh thu (gross) - tiền chuyển khoản - tiền chi = số tiền còn lại trong két</li></ol><ol type="1" id="fd8bc127-5208-422e-adcf-d934b626799c" class="numbered-list" start="3"><li>Nhắn lên group thanh toán với format như sau:<figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="910a8fd7-9fab-41d6-a9f0-da46429fc3e4"><div style="font-size:1.5em"><span class="icon">📌</span></div><div style="width:100%">Tên member + chốt ca … ngày … :<p id="29b9e531-1373-498b-9d73-a0584c83ee00" class="">Tiền trong két ban đầu : …
+Tiền chuyển khoản: …
+Tiền chi: …
+Tiền thu: …
+Tổng tiền: …</p></div></figure><p id="d5efcf3f-a1cd-4c88-80fd-df3a6ac3e5c9" class="">
+</p></li></ol></li></ul><h1 id="27d09eaf-11c3-4d7d-a449-5932b5217a7c" class="">Các vấn đề cần lưu ý</h1><ul id="dc8c5f04-90d2-46bb-a2b8-25c6c90363bd" class="bulleted-list"><li style="list-style-type:disc"><strong>Đối với tất cả members</strong><ol type="1" id="ccaeb7e0-e9ba-41d1-8d55-3bb617ee74e4" class="numbered-list" start="1"><li>Luôn luôn nhớ nói “Xôm xin chào” và “Xôm cám ơn” với khách</li></ol><ol type="1" id="b7bc5a85-0f8f-4257-956b-561967b43736" class="numbered-list" start="2"><li>Đưa hay nhận bất kỳ gì từ khách đều dùng 2 tay</li></ol><ol type="1" id="9c121ba1-ff5d-4775-a2b3-8dc45a210d25" class="numbered-list" start="3"><li>Mỗi CN hàng tuần vào đăng ký lịch làm cho tuần sau trên sheets </li></ol></li></ul><ul id="e217fa7c-66ad-46b4-a973-7e01c53aa03a" class="bulleted-list"><li style="list-style-type:disc"><strong>Đối với các bạn pha chế kiêm thu ngân</strong><ol type="1" id="26caa28f-6316-4096-8e85-90303ec5099b" class="numbered-list" start="1"><li>Luôn luôn phải tạo hoá đơn trước khi pha</li></ol><ol type="1" id="fb434b35-e76e-4d0e-a903-7c03fa1f6fdb" class="numbered-list" start="2"><li>Tạo phiếu chi sau khi sử dụng tiền trong két</li></ol><ol type="1" id="0097da7b-2471-4d8f-a7c4-e442c875966d" class="numbered-list" start="3"><li>Ca tối mỗi ngày 2, 4, 6, CN check toàn bộ nguyên liệu và ước lượng xem những gì sắp hết cần đặt thêm ⇒ tổng hợp và nhắn cho anh Tuấn</li></ol><ol type="1" id="b88336ed-e6f9-4f4e-a9aa-0ee3f23437cd" class="numbered-list" start="4"><li>Không được cho người không phải thành viên của quán vào bar hay sử dụng các đồ vật có trên bar (nếu phát hiện sẽ bị phạt tiền)</li></ol><ol type="1" id="b0d91fd3-3aeb-4cb0-98fb-acc0632971b7" class="numbered-list" start="5"><li>Luôn giữ gìn khu vực bar gọn gàng và sạch sẽ nhất có thể</li></ol><ol type="1" id="5972edd5-1120-46ce-bd2b-bd7ecc383636" class="numbered-list" start="6"><li>Khi thấy lượng đá trong thùng còn ít ⇒ gọi ship đá luôn</li></ol><ol type="1" id="7ab26082-fe2b-461f-a608-df745021ff3b" class="numbered-list" start="7"><li>Cuối mỗi ca cần phải dọn bar + đổ rác nếu đầy (riêng ca tối vẫn đổ dù ít hay nhiều)</li></ol></li></ul><ul id="376f71ee-75a0-4279-8e79-e185134dc9de" class="bulleted-list"><li style="list-style-type:disc"><strong>Đối với các bạn phục vụ</strong><ol type="1" id="13e8ad7f-a678-4dd9-a8a5-014862fb1345" class="numbered-list" start="1"><li>Luôn luôn đi giày và ăn mặc gọn gàng</li></ol><ol type="1" id="12536a0d-faab-45e9-b54c-cfa83f2d413c" class="numbered-list" start="2"><li>Cần nắm được khi nào khách đến và khách đi</li></ol><ol type="1" id="6741a46a-d64f-42e8-9bc0-8e266b9b2e6a" class="numbered-list" start="3"><li>Khi đợi nước ở bar cần quay mặt ra phía ngoài để nhìn thấy được khách</li></ol><ol type="1" id="0cd76768-6cd6-4ea8-bc81-f022ac4c9acc" class="numbered-list" start="4"><li>Sau khi khách rời đi cần dọn bàn và phía bên dưới bàn luôn</li></ol><ol type="1" id="9d71ac50-ee40-43e0-947c-1b77bd0de199" class="numbered-list" start="5"><li>(Với các bạn là nam) Ra dắt xe giúp khách và để gọn gàng</li></ol><ol type="1" id="c8d0d1d3-2f51-454b-bb87-64d09fc49c08" class="numbered-list" start="6"><li>Cuối ngày cất ghế, bàn sắt, bảng biển + dọn dẹp quán + phụ giúp các bạn bar </li></ol><p id="3827c38a-a762-4561-8b14-9fe6862519a4" class="">
+</p></li></ul></div></article></body></html>
